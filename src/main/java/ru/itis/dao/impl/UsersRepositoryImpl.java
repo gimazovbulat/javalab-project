@@ -1,11 +1,10 @@
 package ru.itis.dao.impl;
 
 import org.hibernate.exception.DataException;
-import org.omg.CORBA.PRIVATE_MEMBER;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 import ru.itis.dao.interfaces.UsersRepository;
 import ru.itis.dao.rowmappers.UsersRowMapper;
 import ru.itis.models.User;
@@ -13,7 +12,7 @@ import ru.itis.models.User;
 import java.sql.PreparedStatement;
 import java.util.Optional;
 
-@Component
+@Repository
 public class UsersRepositoryImpl implements UsersRepository {
     private final JdbcTemplate jdbcTemplate;
     private final UsersRowMapper usersRowmapper;

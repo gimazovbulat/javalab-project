@@ -1,56 +1,39 @@
 package ru.itis.servlets;
 
-import lombok.SneakyThrows;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.Bean;
-import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
+import org.springframework.stereotype.Component;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.Controller;
 import ru.itis.dto.SignUpForm;
 import ru.itis.services.impl.SignUpService;
-import ru.itis.services.impl.SignUpServiceImpl;
 
-import javax.servlet.ServletConfig;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 
+@Component("/signUp")
+public class SignUpServlet implements Controller {
+    private final SignUpService signUpService;
 
-@WebServlet(name = "signUpServlet", urlPatterns = "/signUp")
-public class SignUpServlet extends HttpServlet {
-    private SignUpService signUpService;
-    private freemarker.template.Configuration cfg;
-
-    @Override
-    public void init(ServletConfig config) throws ServletException {
-        ServletContext servletContext = config.getServletContext();
-        ApplicationContext applicationContext =
-                (ApplicationContext) servletContext.getAttribute("applicationContext");
-        signUpService = applicationContext.getBean(SignUpServiceImpl.class);
-        cfg = applicationContext.getBean(freemarker.template.Configuration.class);
-        cfg.setServletContextForTemplateLoading(servletContext, "/WEB-INF/templates");
-    }
-
-    @SneakyThrows
-    @Override
-    @Bean
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String content = FreeMarkerTemplateUtils
-                .processTemplateIntoString(cfg.getTemplate("home"), null);
-        resp.getWriter().write(content);
+    public SignUpServlet(SignUpService signUpService) {
+        this.signUpService = signUpService;
     }
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String email = req.getParameter("email");
-        String password = req.getParameter("password");
-        signUpService.signUp(
-                SignUpForm.builder()
-                .email(email)
-                .password(password)
-                .build()
-        );
+    public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("home");
+        if (request.getMethod().equals("GET")){
+            return modelAndView;
+        }
+        else {
+            String email = request.getParameter("email");
+            String password = request.getParameter("password");
+            signUpService.signUp(
+                    SignUpForm.builder()
+                            .email(email)
+                            .password(password)
+                            .build()
+            );
+            return null;
+        }
     }
 }
