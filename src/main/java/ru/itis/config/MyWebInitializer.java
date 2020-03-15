@@ -17,6 +17,6 @@ public class MyWebInitializer
 
     @Override
     protected String[] getServletMappings() {
-        return new String[]{"/", "/abc", "/signUp", "/confirm/*"};
+        return new String[]{"/"};
     }
 }

@@ -17,13 +17,16 @@ public class ConfirmServiceImpl implements ConfirmService {
     }
 
     @Override
-    public Optional<UserDto> isConfirmed(String confirmLink) {
+    public Optional<UserDto> confirm(String confirmLink) {
         Optional<User> optionalUser = usersRepository.findByConfirmLink(confirmLink);
-        if (optionalUser.isPresent()){
+        if (optionalUser.isPresent()) {
             User user = optionalUser.get();
             user.setUserState(UserState.CONFIRMED);
             usersRepository.update(user);
-            return Optional.of(UserDto.builder().email(user.getEmail()).build());
+            return Optional.of(UserDto.builder()
+                    .email(user.getEmail())
+                    .id(user.getId())
+                    .build());
         }
         return Optional.empty();
     }

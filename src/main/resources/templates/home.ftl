@@ -8,5 +8,8 @@
     <input type="password" placeholder="password" name="password">
     <input type="submit">
 </form>
+<#if status??>
+    ${status}
+</#if>
 </body>
 </html>

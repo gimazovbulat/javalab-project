@@ -4,9 +4,11 @@ import org.springframework.web.multipart.MultipartFile;
 import ru.itis.dto.UserDto;
 import ru.itis.models.FileInfo;
 
+import javax.servlet.http.HttpServletResponse;
 import java.io.File;
+import java.io.IOException;
 
 public interface FilesService {
-   File find(String origFileName);
    FileInfo save(MultipartFile file, UserDto userDto);
+   void downloadFile(HttpServletResponse response, String fileName) throws IOException;
 }

@@ -1,5 +1,7 @@
 package ru.itis.services.impl;
 
+import org.apache.commons.io.FilenameUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import ru.itis.aspects.SendMailAnno;
@@ -8,12 +10,15 @@ import ru.itis.dto.UserDto;
 import ru.itis.models.FileInfo;
 import ru.itis.services.interfaces.FilesService;
 
-import java.io.File;
-import java.io.IOException;
+import javax.servlet.http.HttpServletResponse;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.UUID;
+
+import static org.apache.commons.io.IOUtils.copy;
+import static org.apache.commons.io.IOUtils.resourceToByteArray;
 
 @Service
 public class FilesServiceImpl implements FilesService {
@@ -23,32 +28,42 @@ public class FilesServiceImpl implements FilesService {
         this.filesRepository = filesRepository;
     }
 
-    @Override
-    public File find(String origFileName) {
-        FileInfo fileInfo = filesRepository.findByName(origFileName);
-        return new File(fileInfo.getStorageFileName());
-    }
+    @Value("${storage.dir}")
+    private String storageDir;
 
-    @SendMailAnno
     @Override
+    @SendMailAnno
     public FileInfo save(MultipartFile file, UserDto userDto) {
-        String storageName = "C:/savedFiles/" + UUID.randomUUID() + file.getOriginalFilename();
-        Path path = Paths.get("C:/savedFiles/" + storageName);
+        String fileOrigName = file.getOriginalFilename();
+        String storageName =  UUID.randomUUID() + "." + FilenameUtils.getExtension(fileOrigName);
+        Path path = Paths.get(storageDir + storageName);
 
         try {
             Files.copy(file.getInputStream(), path);
         } catch (IOException e) {
             throw new IllegalStateException(e);
         }
+
         FileInfo fileInfo = FileInfo.builder()
-                .originalFileName(file.getOriginalFilename())
+                .originalFileName(fileOrigName)
                 .storageFileName(storageName)
                 .size(file.getSize())
                 .type(file.getContentType())
                 .url("localhost:8080/files/" + storageName)
                 .userId(userDto.getId())
                 .build();
+
         filesRepository.save(fileInfo);
+
         return fileInfo;
     }
+
+    @Override
+    public void downloadFile(HttpServletResponse response, String fileName) throws IOException {
+        FileInfo fileInfo = filesRepository.findByName(fileName);
+        InputStream inputStream = new FileInputStream(new File(storageDir + fileInfo.getStorageFileName()));
+        copy(inputStream, response.getOutputStream());
+        response.flushBuffer();
+    }
+
 }

@@ -27,8 +27,8 @@
                 processData: false,
                 contentType: false
             })
-                .done(function (response) {
-                    alert(response)
+                .done(function () {
+                    alert("link was sent to your email :)")
                 })
                 .fail(function () {
                     alert('Error')
@@ -45,5 +45,12 @@
     <input type="hidden" id="file_hidden">
     <div class="filename"></div>
 </div>
+
+<#if status??>
+    ${status}
+</#if>
+<#if image??>
+    <img src="${image}">
+</#if>
 </body>
 </html> 

@@ -10,8 +10,11 @@ import org.springframework.web.servlet.ModelAndView;
 import ru.itis.dto.UserDto;
 import ru.itis.services.interfaces.FilesService;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.IOException;
 
 @Controller
 public class FilesController {
@@ -20,7 +23,6 @@ public class FilesController {
     public FilesController(FilesService filesService) {
         this.filesService = filesService;
     }
-
 
     @GetMapping(value = "/files")
     public ModelAndView uploadFile() {
@@ -33,17 +35,19 @@ public class FilesController {
     public ModelAndView uploadFile(@RequestParam("file") MultipartFile multipartFile, HttpSession session) {
         UserDto userDto = (UserDto) session.getAttribute("user");
         filesService.save(multipartFile, userDto);
-        return null;
+        ModelAndView model = new ModelAndView();
+        model.addObject("status", "file was successfully downloaded");
+        model.setViewName("files");
+        return model;
     }
     // localhost:8080/files/123809183093qsdas09df8af.jpeg
 
     @GetMapping(value = "/files/{file-name:.+}")
-    public ModelAndView getFile(@PathVariable("file-name") String fileName) {
-        File file = filesService.find(fileName);
-        ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("files");
-        modelAndView.addObject("file", file);
-
-        return modelAndView;
+    public void getFile(@PathVariable("file-name") String fileName, HttpServletResponse response) {
+        try {
+            filesService.downloadFile(response, fileName);
+        } catch (IOException e) {
+            throw new IllegalStateException(e);
+        }
     }
 }

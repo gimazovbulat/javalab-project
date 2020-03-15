@@ -1,17 +1,14 @@
 package ru.itis.services.impl;
 
-import freemarker.template.Configuration;
-import freemarker.template.TemplateException;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
-import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
 import ru.itis.models.User;
+import ru.itis.services.interfaces.TemplateDrawer;
 
 import javax.mail.internet.MimeMessage;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
@@ -20,44 +17,35 @@ import java.util.concurrent.Executors;
 @Service
 public class MailService {
     private static final String CONFIRM_URL = "http://localhost:8080/confirm/";
-    private final
-    JavaMailSender sender;
-    private final
-    Configuration ftlConfiguration;
+    private final JavaMailSender sender;
+    private final TemplateDrawer templateDrawer;
 
     private ExecutorService executorService = Executors.newCachedThreadPool();
 
-    public MailService(JavaMailSender sender, Configuration ftlConfiguration) {
+    public MailService(JavaMailSender sender, TemplateDrawer templateDrawer) {
         this.sender = sender;
-        this.ftlConfiguration = ftlConfiguration;
+        this.templateDrawer = templateDrawer;
     }
 
     @Value("${mail.username}")
     private String FROM;
 
-    public void sendEmailConfirmationLink(User user){
-        StringBuilder stringBuilder = new StringBuilder();
-
+    public void sendEmailConfirmationLink(User user) {
         String mailText =
                 CONFIRM_URL + user.getConfirmLink();
 
         Map<String, Object> model = new HashMap<>();
         model.put("user", user);
         model.put("link", mailText);
-        try {
 
-            stringBuilder.append(FreeMarkerTemplateUtils
-                    .processTemplateIntoString(ftlConfiguration.getTemplate("mail.ftl"), model));
-        } catch (IOException | TemplateException e) {
-            throw new IllegalStateException(e);
-        }
+        String templateAsString = templateDrawer.getPageAsString("mail", model);
         executorService.submit(() -> {
             MimeMessage message = sender.createMimeMessage();
             try {
                 MimeMessageHelper messageHelper = new MimeMessageHelper(message, true);
                 messageHelper.setTo(user.getEmail());
                 messageHelper.setSubject("Подтерждение регистрации");
-                messageHelper.setText(stringBuilder.toString(), true);
+                messageHelper.setText(templateAsString, true);
                 messageHelper.setFrom(FROM);
             } catch (javax.mail.MessagingException e) {
                 throw new IllegalArgumentException(e);
@@ -65,18 +53,15 @@ public class MailService {
             sender.send(message);
         });
     }
-    public void sendText(String email, String text){
+
+    public void sendText(String email, String text) {
         executorService.submit(() -> {
-            MimeMessage message = sender.createMimeMessage();
-            try {
-                MimeMessageHelper messageHelper = new MimeMessageHelper(message, true);
-                messageHelper.setTo(email);
-                messageHelper.setSubject("Подтерждение регистрации");
-                messageHelper.setText(text, true);
-                messageHelper.setFrom(FROM);
-            } catch (javax.mail.MessagingException e) {
-                throw new IllegalArgumentException(e);
-            }
+            SimpleMailMessage message = new SimpleMailMessage();
+            message.setTo(email);
+            message.setSubject("link to your file");
+            message.setText(text);
+            message.setFrom(FROM);
+
             sender.send(message);
         });
     }

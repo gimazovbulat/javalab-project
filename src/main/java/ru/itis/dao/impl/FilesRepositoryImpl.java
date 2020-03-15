@@ -47,6 +47,7 @@ public class FilesRepositoryImpl implements FilesRepository {
 
             return ps;
         }, keyHolder);
+        fileInfo.setId((Long) keyHolder.getKey());
     }
 
     @Override
@@ -65,9 +66,9 @@ public class FilesRepositoryImpl implements FilesRepository {
     }
 
     @Override
-    public FileInfo findByName(String name) {
-        String sqlToFind = "SELECT * FROM project.files WHERE orig_name = ?";
-        FileInfo fileInfo = jdbcTemplate.queryForObject(sqlToFind, rowMapper, name);
+    public FileInfo findByName(String storageName) {
+        String sqlToFind = "SELECT * FROM project.files WHERE storage_name = ?";
+        FileInfo fileInfo = jdbcTemplate.queryForObject(sqlToFind, rowMapper, storageName);
         return fileInfo;
     }
 }
