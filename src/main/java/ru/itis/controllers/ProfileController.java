@@ -1,14 +1,13 @@
 package ru.itis.controllers;
 
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import ru.itis.dto.UserDto;
 import ru.itis.services.interfaces.UsersService;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-
-import static org.springframework.security.web.context.HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY;
+import java.util.Optional;
 
 @Controller
 public class ProfileController {
@@ -19,12 +18,13 @@ public class ProfileController {
     }
 
     @GetMapping("/profile")
-    public String showUser(Model model, HttpServletRequest req) {
-//        String email = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
-        HttpSession session = req.getSession(false);
-        System.out.println(session.getAttribute(SPRING_SECURITY_CONTEXT_KEY));
-//        Optional<UserDto> userDto = usersService.findUser(email);
-//        model.addAttribute("user", userDto);
-        return "profile";
+    public String showUser(Model model, Authentication authentication) {
+        if (authentication != null) {
+            String email = authentication.getPrincipal().toString();
+            Optional<UserDto> optionalUser = usersService.findUser(email);
+            optionalUser.ifPresent(userDto -> model.addAttribute("user", userDto));
+            return "profile";
+        }
+        return "redirect:/signIn";
     }
 }
