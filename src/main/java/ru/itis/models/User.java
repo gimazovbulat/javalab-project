@@ -4,10 +4,13 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import ru.itis.security.Role;
+
+import java.util.HashSet;
+import java.util.Set;
 
 @Data
 @AllArgsConstructor
-@NoArgsConstructor
 @Builder
 public class User {
     private Long id;
@@ -15,4 +18,10 @@ public class User {
     private String password;
     private UserState userState;
     private String confirmLink;
+    private String avaPath;
+    private Set<Role> roles;
+
+    public User() {
+        roles = new HashSet<>();
+    }
 }

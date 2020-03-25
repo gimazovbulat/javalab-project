@@ -2,6 +2,7 @@ package ru.itis.aspects;
 
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import ru.itis.dao.interfaces.UsersRepository;
 import ru.itis.models.FileInfo;
@@ -16,6 +17,9 @@ public class MyAspect {
     private final MailService mailService;
     private final UsersRepository usersRepository;
 
+    @Value("${web.root}")
+    private String webRoot;
+
     public MyAspect(MailService mailService, UsersRepository usersRepository) {
         this.mailService = mailService;
         this.usersRepository = usersRepository;
@@ -26,7 +30,7 @@ public class MyAspect {
         Optional<User> optionalUser = usersRepository.find(fileInfo.getUserId());
         if (optionalUser.isPresent()){
             User user = optionalUser.get();
-            mailService.sendText(user.getEmail(), fileInfo.getUrl());
+            mailService.sendText(user.getEmail(), webRoot + fileInfo.getUrl());
         }
     }
 }

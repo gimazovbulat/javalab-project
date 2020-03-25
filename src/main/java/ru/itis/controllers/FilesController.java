@@ -1,4 +1,4 @@
-package ru.itis.servlets;
+package ru.itis.controllers;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -7,13 +7,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
-import ru.itis.dto.UserDto;
 import ru.itis.services.interfaces.FilesService;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.io.BufferedOutputStream;
-import java.io.File;
 import java.io.IOException;
 
 @Controller
@@ -33,8 +30,8 @@ public class FilesController {
 
     @PostMapping(value = "/files")
     public ModelAndView uploadFile(@RequestParam("file") MultipartFile multipartFile, HttpSession session) {
-        UserDto userDto = (UserDto) session.getAttribute("user");
-        filesService.save(multipartFile, userDto);
+        Long userId = (Long) session.getAttribute("userId");
+        filesService.save(multipartFile, userId);
         ModelAndView model = new ModelAndView();
         model.addObject("status", "file was successfully downloaded");
         model.setViewName("files");

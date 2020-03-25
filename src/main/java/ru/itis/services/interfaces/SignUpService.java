@@ -1,4 +1,4 @@
-package ru.itis.services.impl;
+package ru.itis.services.interfaces;
 
 import ru.itis.dto.SignUpForm;
 

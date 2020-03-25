@@ -1,11 +1,11 @@
-package ru.itis.servlets;
+package ru.itis.controllers;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.servlet.ModelAndView;
 import ru.itis.dto.UserDto;
-import ru.itis.services.impl.ConfirmService;
+import ru.itis.services.interfaces.ConfirmService;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -20,15 +20,12 @@ public class ConfirmController {
     }
 
     @GetMapping("/confirm/{link}")
-    public String handleRequest(@PathVariable String link, HttpServletRequest request, ModelAndView modelAndView) {
-        Optional<UserDto> optionalUser = confirmService.confirm(link);
-        HttpSession session = request.getSession();
-        if (optionalUser.isPresent()) {
-            session.setAttribute("user", optionalUser.get());
+    public String handleRequest(@PathVariable String link, ModelAndView modelAndView) {
+        boolean isConfirmed = confirmService.confirm(link);
+        if (isConfirmed) {
             return "redirect:/signIn";
         } else {
-            modelAndView.addObject("err", "Try again");
-            return "error";
+           return "error";
         }
     }
 }

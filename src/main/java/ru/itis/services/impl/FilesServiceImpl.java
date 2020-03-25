@@ -33,9 +33,9 @@ public class FilesServiceImpl implements FilesService {
 
     @Override
     @SendMailAnno
-    public FileInfo save(MultipartFile file, UserDto userDto) {
+    public FileInfo save(MultipartFile file, Long userId) {
         String fileOrigName = file.getOriginalFilename();
-        String storageName =  UUID.randomUUID() + "." + FilenameUtils.getExtension(fileOrigName);
+        String storageName = UUID.randomUUID() + "." + FilenameUtils.getExtension(fileOrigName);
         Path path = Paths.get(storageDir + storageName);
 
         try {
@@ -49,8 +49,8 @@ public class FilesServiceImpl implements FilesService {
                 .storageFileName(storageName)
                 .size(file.getSize())
                 .type(file.getContentType())
-                .url("localhost:8080/files/" + storageName)
-                .userId(userDto.getId())
+                .url("/files/" + storageName)
+                .userId(userId)
                 .build();
 
         filesRepository.save(fileInfo);

@@ -7,7 +7,7 @@ public class MyWebInitializer
 
     @Override
     protected Class<?>[] getRootConfigClasses() {
-        return new Class[]{ApplicationContextImpl.class};
+        return new Class[]{ApplicationContextImpl.class, SecurityConfig.class};
     }
 
     @Override

@@ -32,7 +32,7 @@ public class FilesRepositoryImpl implements FilesRepository {
     }
 
     @Override
-    public void save(FileInfo fileInfo) {
+    public Long save(FileInfo fileInfo) {
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
         String sqlToSave = "INSERT INTO project.files (orig_name, storage_name, type, size, url, user_id) VALUES (?, ?, ?, ?, ?, ?)";
@@ -48,6 +48,7 @@ public class FilesRepositoryImpl implements FilesRepository {
             return ps;
         }, keyHolder);
         fileInfo.setId((Long) keyHolder.getKey());
+        return fileInfo.getId();
     }
 
     @Override

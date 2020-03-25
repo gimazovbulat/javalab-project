@@ -49,8 +49,5 @@
 <#if status??>
     ${status}
 </#if>
-<#if image??>
-    <img src="${image}">
-</#if>
 </body>
 </html> 

@@ -1,1 +1,1 @@
-${error}
+something went wrong
