@@ -20,7 +20,7 @@ public class ConfirmController {
     }
 
     @GetMapping("/confirm/{link}")
-    public String handleRequest(@PathVariable String link, ModelAndView modelAndView) {
+    public String handleRequest(@PathVariable String link) {
         boolean isConfirmed = confirmService.confirm(link);
         if (isConfirmed) {
             return "redirect:/signIn";

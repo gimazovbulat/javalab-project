@@ -17,13 +17,11 @@ public class SignUpController {
 
     @GetMapping("/signUp")
     public String getPage() {
-        return "home";
+        return "signUp";
     }
 
     @PostMapping("/signUp")
-    public String handleRequest(SignUpForm signUpForm, Model model) {
+    public void handleRequest(SignUpForm signUpForm, Model model) {
         signUpService.signUp(signUpForm);
-        model.addAttribute("status", "link sent");
-        return "home";
     }
 }

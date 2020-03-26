@@ -3,21 +3,14 @@ package ru.itis.config;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.authentication.ProviderManager;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.csrf.CsrfFilter;
-import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
 import ru.itis.dao.interfaces.UsersRepository;
-import ru.itis.security.AuthenticationProviderImpl;
-
-import java.util.Collections;
 
 @Configuration
 @EnableWebSecurity
@@ -39,27 +32,20 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     public void configure(HttpSecurity http) throws Exception {
         http
                 .authorizeRequests()
-                .antMatchers("/signIn", "/signUp", "/confirm")
+                .antMatchers("/signIn", "/signUp", "/confirm", "/")
                 .permitAll()
                 .anyRequest()
                 .authenticated()
                 .and()
                 .formLogin()
                 .loginPage("/signIn")
-                .usernameParameter("email")
-                .defaultSuccessUrl("/profile");
-
-    }
-
-    @Bean
-    AuthenticationProvider authenticationProvider(){
-        return new AuthenticationProviderImpl(usersRepository, passwordEncoder());
+                .usernameParameter("email");
     }
 
     @Override
-    @Bean
-    protected AuthenticationManager authenticationManager() throws Exception {
-        return new ProviderManager(Collections.singletonList(authenticationProvider()));
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth
+                .userDetailsService(userDetailsService)
+                .passwordEncoder(passwordEncoder());
     }
-
 }

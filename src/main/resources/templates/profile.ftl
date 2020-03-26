@@ -3,4 +3,5 @@
     ${user.email}
     <img src="${user.avaPath}">
 </#if>
+
 </html>

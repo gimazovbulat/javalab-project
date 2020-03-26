@@ -1,6 +1,7 @@
 package ru.itis.controllers;
 
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,7 +21,8 @@ public class ProfileController {
     @GetMapping("/profile")
     public String showUser(Model model, Authentication authentication) {
         if (authentication != null) {
-            String email = authentication.getPrincipal().toString();
+            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+            String email = userDetails.getUsername();
             Optional<UserDto> optionalUser = usersService.findUser(email);
             optionalUser.ifPresent(userDto -> model.addAttribute("user", userDto));
             return "profile";
