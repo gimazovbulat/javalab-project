@@ -6,6 +6,7 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 import ru.itis.models.User;
+import ru.itis.services.interfaces.MailService;
 import ru.itis.services.interfaces.TemplateDrawer;
 
 import javax.mail.internet.MimeMessage;
@@ -15,14 +16,14 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 @Service
-public class MailService {
+public class MailServiceImpl implements MailService {
     private static final String CONFIRM_URL = "http://localhost:8080/confirm/";
     private final JavaMailSender sender;
     private final TemplateDrawer templateDrawer;
 
     private ExecutorService executorService = Executors.newCachedThreadPool();
 
-    public MailService(JavaMailSender sender, TemplateDrawer templateDrawer) {
+    public MailServiceImpl(JavaMailSender sender, TemplateDrawer templateDrawer) {
         this.sender = sender;
         this.templateDrawer = templateDrawer;
     }

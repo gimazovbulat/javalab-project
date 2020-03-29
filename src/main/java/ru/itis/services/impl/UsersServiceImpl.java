@@ -35,7 +35,6 @@ public class UsersServiceImpl implements UsersService {
         Optional<User> optionalUser = usersRepository.findByEmail(email);
         if (optionalUser.isPresent()) {
             User user = optionalUser.get();
-            System.out.println(user.getRoles());
             return Optional.of(UserDto.builder()
                     .email(email)
                     .avaPath(user.getAvaPath())

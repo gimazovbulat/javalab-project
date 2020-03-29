@@ -16,7 +16,6 @@ public class UsersRowMapper implements RowMapper<User> {
     public User mapRow(ResultSet rs, int rowNum) throws SQLException {
         User user = new User();
         do {
-            System.out.println(rs.getString("role"));
             String email = rs.getString("email");
             UserState userState = UserState.valueOf(rs.getString("state"));
             Long id = rs.getLong("id");
@@ -32,7 +31,6 @@ public class UsersRowMapper implements RowMapper<User> {
             user.setConfirmLink(confirmLink);
             user.setUserState(userState);
             user.getRoles().add(Role.valueOf(role));
-            System.out.println(user);
         }
         while (rs.next());
         return user;

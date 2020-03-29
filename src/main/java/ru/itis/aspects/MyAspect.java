@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 import ru.itis.dao.interfaces.UsersRepository;
 import ru.itis.models.FileInfo;
 import ru.itis.models.User;
-import ru.itis.services.impl.MailService;
+import ru.itis.services.interfaces.MailService;
 
 import java.util.Optional;
 

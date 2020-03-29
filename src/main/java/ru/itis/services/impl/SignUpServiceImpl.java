@@ -4,11 +4,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import ru.itis.dao.interfaces.UsersRepository;
 import ru.itis.dto.SignUpForm;
-import ru.itis.models.FileInfo;
 import ru.itis.models.User;
 import ru.itis.models.UserState;
 import ru.itis.security.Role;
-import ru.itis.services.interfaces.FilesService;
+import ru.itis.services.interfaces.MailService;
 import ru.itis.services.interfaces.SignUpService;
 
 import java.util.HashSet;
