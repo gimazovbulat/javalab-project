@@ -23,14 +23,11 @@ public class SignUpServiceImpl implements SignUpService {
     PasswordEncoder passwordEncoder;
     private final
     MailService mailService;
-    private final
-    FilesService filesService;
 
-    public SignUpServiceImpl(PasswordEncoder passwordEncoder, UsersRepository usersRepository, MailService mailService, FilesService filesService) {
+    public SignUpServiceImpl(PasswordEncoder passwordEncoder, UsersRepository usersRepository, MailService mailService) {
         this.passwordEncoder = passwordEncoder;
         this.usersRepository = usersRepository;
         this.mailService = mailService;
-        this.filesService = filesService;
     }
 
     @Override
