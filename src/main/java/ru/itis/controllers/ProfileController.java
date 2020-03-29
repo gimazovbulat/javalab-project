@@ -20,13 +20,10 @@ public class ProfileController {
 
     @GetMapping("/profile")
     public String showUser(Model model, Authentication authentication) {
-        if (authentication != null) {
             UserDetails userDetails = (UserDetails) authentication.getPrincipal();
             String email = userDetails.getUsername();
             Optional<UserDto> optionalUser = usersService.findUser(email);
             optionalUser.ifPresent(userDto -> model.addAttribute("user", userDto));
             return "profile";
         }
-        return "redirect:/signIn";
-    }
 }

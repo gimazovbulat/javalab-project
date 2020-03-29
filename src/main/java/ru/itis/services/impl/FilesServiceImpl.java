@@ -61,6 +61,7 @@ public class FilesServiceImpl implements FilesService {
     @Override
     public void downloadFile(HttpServletResponse response, String fileName) throws IOException {
         FileInfo fileInfo = filesRepository.findByName(fileName);
+        response.setContentType(fileInfo.getType());
         InputStream inputStream = new FileInputStream(new File(storageDir + fileInfo.getStorageFileName()));
         copy(inputStream, response.getOutputStream());
         response.flushBuffer();

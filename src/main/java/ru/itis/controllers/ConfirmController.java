@@ -22,6 +22,7 @@ public class ConfirmController {
     @GetMapping("/confirm/{link}")
     public String handleRequest(@PathVariable String link) {
         boolean isConfirmed = confirmService.confirm(link);
+        System.out.println("confirm...");
         if (isConfirmed) {
             return "redirect:/signIn";
         } else {
@@ -29,3 +30,4 @@ public class ConfirmController {
         }
     }
 }
+ 

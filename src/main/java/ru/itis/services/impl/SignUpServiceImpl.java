@@ -47,11 +47,7 @@ public class SignUpServiceImpl implements SignUpService {
                 .roles(roles)
                 .build();
 
-        Long userId = usersRepository.save(user);
-
-        FileInfo fileInfo = filesService.save(form.getFile(), userId);
-        user.setAvaPath(fileInfo.getUrl());
-        usersRepository.update(user);
+        usersRepository.save(user);
 
         mailService.sendEmailConfirmationLink(user);
     }

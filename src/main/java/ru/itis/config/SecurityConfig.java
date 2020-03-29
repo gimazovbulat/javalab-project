@@ -12,7 +12,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import ru.itis.dao.interfaces.UsersRepository;
 
-@Configuration
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
     final UserDetailsService userDetailsService;
@@ -32,7 +31,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     public void configure(HttpSecurity http) throws Exception {
         http
                 .authorizeRequests()
-                .antMatchers("/signIn", "/signUp", "/confirm", "/")
+                .antMatchers("/signIn", "/signUp", "/confirm/*", "/")
                 .permitAll()
                 .anyRequest()
                 .authenticated()
